@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIGGEST — EARN. SIMPLY.</title>
+<style>
+:root { --bg:#050505; --card:#111; --border:#222; --accent:#e8b44a; --muted:#888; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:#fff; min-height:100vh; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+.top { padding:18px 20px 10px; display:flex; justify-content:space-between; align-items:center; }
+.hello { font-size:28px; font-weight:400; }
+.lang { border:1px solid #333; padding:6px 10px; border-radius:10px; font-size:12px; color:#aaa; }
+.page { padding:0 20px 20px; max-width:480px; margin:0 auto; }
+.balance-card { background:#111; border:1px solid #222; border-radius:20px; padding:20px; margin:10px 0 16px; }
+.balance-card .label { letter-spacing:3px; color:#aaa; font-size:12px; }
+.balance { font-size:52px; font-weight:600; margin:8px 0 4px; }
+.user-id { color:#aaa; font-size:13px; }
+.cashout-btn { width:100%; background:#222; border:none; color:#fff; padding:16px; border-radius:16px; font-size:16px; margin:8px 0 16px; }
+.task-card { background:#111; border:1px solid #222; border-radius:18px; padding:16px; margin-bottom:12px; }
+.task-header { display:flex; justify-content:space-between; align-items:center; }
+.task-icon { width:36px; height:36px; background:#222; border-radius:10px; display:flex; align-items:center; justify-content:center; }
+.streak-text { font-size:13px; color:#aaa; margin-top:10px; line-height:1.4; }
+.earned { display:flex; justify-content:space-between; font-size:13px; color:#aaa; margin:16px 0; }
+.earned span { color:#e8b44a; }
+.banner { background:#111; border:1px solid #222; border-radius:14px; padding:12px 14px; font-size:13px; color:#aaa; display:flex; align-items:center; gap:8px; }
+.bottom { position:fixed; bottom:0; left:0; right:0; background:#080808; display:flex; justify-content:space-around; padding:10px 0 14px; border-top:1px solid #1a1a1a; font-size:11px; color:#888; }
+.bottom div { text-align:center; cursor:pointer; }
+.bottom .active { color:#fff; }
+.hidden { display:none !important; }
+input, select { width:100%; padding:14px; background:#1a1a1a; border:1px solid #2a2a2a; color:#fff; border-radius:12px; font-size:15px; margin-bottom:8px; }
+label { display:block; font-size:11px; letter-spacing:1.5px; color:#aaa; margin:14px 0 6px; text-transform:uppercase; }
+.btn { width:100%; padding:16px; background:#fff; color:#000; border:none; border-radius:14px; font-size:16px; font-weight:600; cursor:pointer; margin-top:12px; }
+.btn.dark { background:#222; color:#fff; }
+.taskBtn { background:#2a2a2a; color:#fff; border:none; padding:10px 16px; border-radius:10px; font-size:13px; }
+.taskBtn.done { opacity:0.6; }
+.refLink { background:#1a1a1a; padding:12px; border-radius:10px; word-break:break-all; font-size:13px; margin:10px 0; }
+.userRow { background:#151515; padding:12px; border-radius:10px; margin:8px 0; font-size:13px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.editInput { width:80px; padding:6px; font-size:13px; margin:0; }
+</style>
+</head>
+<body>
+
+<div id="authPage">
+  <div class="page" style="padding-top:40px;">
+    <h1 style="font-size:28px; margin-bottom:20px;">Create Account</h1>
+    <label>Email</label>
+    <input id="regEmail" type="email">
+    <label>Country</label>
+    <select id="regCountry"><option>United States</option><option>Nigeria</option><option>Ghana</option></select>
+    <label>Mobile Number</label>
+    <div style="display:flex; gap:8px;">
+      <select id="regCode" style="width:80px;"><option>+1</option><option>+234</option></select>
+      <input id="regPhone" placeholder="Enter your mobile number">
+    </div>
+    <label>Sponsor</label>
+    <input id="regSponsor" placeholder="Sponsor username">
+    <label>Password</label>
+    <input id="regPass" type="password">
+    <label>Confirm Password</label>
+    <input id="regPass2" type="password">
+    <div style="display:flex; align-items:center; gap:10px; margin:16px 0; font-size:14px;">
+      <input type="checkbox" id="terms">
+      <span>I accept the Terms & Privacy Policy</span>
+    </div>
+    <button class="btn" onclick="register()">Create Account</button>
+    <p style="text-align:center; font-size:13px; margin-top:16px; color:#888;">Already have an account? <a href="#" onclick="showLogin();return false;" style="color:#fff">Login</a></p>
+  </div>
+</div>
+
+<div id="loginPage" class="hidden">
+  <div class="page" style="padding-top:40px;">
+    <h1>Login</h1>
+    <label>Email</label>
+    <input id="loginEmail" type="email">
+    <label>Password</label>
+    <input id="loginPass" type="password">
+    <button class="btn" onclick="login()">Login</button>
+    <p style="text-align:center; font-size:13px; margin-top:16px; color:#888;"><a href="#" onclick="showAuth();return false;" style="color:#fff">Create account</a></p>
+  </div>
+</div>
+
+<div id="homePage" class="hidden">
+  <div class="top">
+    <div class="hello">hello, <span id="helloUser">big_og24</span></div>
+    <div class="lang">🌐 EN</div>
+  </div>
+  <div class="page">
+    <div class="balance-card">
+      <div class="label">ADSELECT</div>
+      <div class="balance">$<span id="bal">0.00</span></div>
+      <div class="user-id" id="userCode">BIG_OG24</div>
+    </div>
+    <button class="cashout-btn" onclick="cashout()">Cash Out</button>
+    <div class="task-card">
+      <div class="task-header">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="task-icon">🎁</div>
+          <div>
+            <div style="font-weight:500;">Daily Bonus · Day <span id="dayNum">1</span>/30</div>
+            <div style="font-size:12px; color:#888;">NEXT 05:04:59</div>
+          </div>
+        </div>
+        <button id="claimBtn" class="taskBtn" onclick="claimDaily()">Claim</button>
+      </div>
+      <div class="streak-text">Come back tomorrow for $<span id="nextBonus">0.10</span> (day <span id="nextDay">2</span>). Miss a day and the streak restarts from day 1.</div>
+    </div>
+    <div class="earned">
+      <span>EARNED TODAY</span>
+      <span>$<span id="earnedToday">0.00</span></span>
+    </div>
+    <div class="banner">🔔 Referral Program Ending Soon — Invite Friends & Maximize Your Earnings</div>
+  </div>
+  <div style="height:90px"></div>
+</div>
+
+<div id="earnPage" class="hidden">
+  <div class="top"><div style="font-size:22px;">Tasks</div></div>
+  <div class="page">
+    <div class="task-card">
+      <div class="task-header">
+        <div><h3>Daily Bonus · Day <span id="dayNum2">1</span></h3><p style="color:#888; font-size:13px;">Reward $<span id="nextBonus2">0.10</span></p></div>
+        <button id="claimBtn2" class="taskBtn" onclick="claimDaily()">Claim</button>
+      </div>
+    </div>
+    <div class="task-card">
+      <div class="task-header">
+        <div><h3>📺 Watch YouTube</h3><p style="color:#888; font-size:13px;">1 per day · $<span class="rewardVal">0.10</span></p></div>
+        <button id="ytBtn" class="taskBtn" onclick="doYoutube()">Watch</button>
+      </div>
+    </div>
+  </div>
+  <div style="height:90px"></div>
+</div>
+
+<div id="teamPage" class="hidden">
+  <div class="top"><div style="font-size:22px;">Team</div></div>
+  <div class="page">
+    <h2 style="margin-bottom:12px;">Your Referral Link</h2>
+    <div class="refLink" id="refLink">Loading...</div>
+    <button class="btn" onclick="copyRef()">Copy Link</button>
+    <div style="margin-top:20px; font-size:13px; color:#888;">Referrals: <span id="refCount" style="color:#e8b44a">0</span></div>
+  </div>
+  <div style="height:90px"></div>
+</div>
+
+<div id="walletPage" class="hidden">
+  <div class="top"><div style="font-size:22px;">Wallet</div></div>
+  <div class="page">
+    <div class="balance-card">
+      <div class="label">AVAILABLE BALANCE</div>
+      <div class="balance">$<span id="walletBal">0.00</span></div>
+    </div>
+    <button class="cashout-btn" onclick="cashout()">Cash Out · Min $5.00</button>
+  </div>
+  <div style="height:90px"></div>
+</div>
+
+<div id="adminPage" class="hidden">
+  <div class="page" style="padding-top:30px;">
+    <h2 style="margin-bottom:16px;">Admin</h2>
+    <label>Admin Code</label>
+    <input id="adminCode" type="password" placeholder="Enter code" autocomplete="off">
+    <button class="btn dark" onclick="checkAdmin()">Enter</button>
+    <div id="adminContent" class="hidden" style="margin-top:20px;">
+      <div style="margin-bottom:16px;">Total Users: <b id="totalUsers">0</b></div>
+      <div id="usersList"></div>
+      <h3 style="margin:24px 0 12px;">Edit Rewards</h3>
+      <label>Daily Claim ($)</label>
+      <input id="newClaim" type="number" step="0.01" value="0.10">
+      <label>YouTube Reward ($)</label>
+      <input id="newReward" type="number" step="0.01" value="0.10">
+      <button class="btn dark" onclick="saveRewards()">Save Rewards</button>
+      <h3 style="margin:24px 0 12px;">Pending Cashouts</h3>
+      <div id="cashoutsList"></div>
+      <button class="btn dark" onclick="backHome()" style="margin-top:20px;">Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="bottom" id="navBar" style="display:none">
+  <div id="navHome" class="active" onclick="goHome()">🏠<br>HOME</div>
+  <div id="navEarn" onclick="goEarn()">▶️<br>EARN</div>
+  <div id="navTeam" onclick="goTeam()">👥<br>TEAM</div>
+  <div id="navWallet" onclick="goWallet()">👛<br>WALLET</div>
+  <div id="navMe" onclick="goAdmin()">👤<br>ME</div>
+</div>
+
+<script type="module">
+const firebaseConfig = {
+  apiKey: "AIzaSyBAgJN-lzbwBiCz0PRm1dZJ1GnpGu76OTw",
+  authDomain: "adselectbiggest.firebaseapp.com",
+  projectId: "adselectbiggest",
+  storageBucket: "adselectbiggest.firebasestorage.app",
+  messagingSenderId: "735881012710",
+  appId: "1:735881012710:web:c5e494a45255be30876227",
+  measurementId: "G-EJ7SL8PMQC"
+};
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let settings = { reward: 0.10, claim: 0.10 };
+const ADMIN_CODE = "2026";
+
+function today() { return new Date().toDateString(); }
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    await loadUserData();
+    goHome();
+  } else {
+    currentUser = null;
+    showAuth();
+  }
+});
+
+async function loadUserData() {
+  const ref = doc(db, "users", currentUser.uid);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) {
+    await setDoc(ref, {
+      name: currentUser.email.split("@")[0],
+      email: currentUser.email,
+      balance: 0.10,
+      earned: 0.10,
+      day: 1,
+      lastClaim: "",
+      lastYt: "",
+      referrals: 0,
+      created: Date.now()
+    });
+  }
+  refreshUI();
+}
+
+async function register() {
+  const email = document.getElementById("regEmail").value.trim();
+  const pass = document.getElementById("regPass").value;
+  const pass2 = document.getElementById("regPass2").value;
+  const terms = document.getElementById("terms").checked;
+  if (!email || !pass) return alert("Email and password required");
+  if (pass !== pass2) return alert("Passwords do not match");
+  if (pass.length < 6) return alert("Password must be at least 6 characters");
+  if (!terms) return alert("Please accept the Terms");
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await setDoc(doc(db, "users", cred.user.uid), {
+      name: email.split("@")[0],
+      email,
+      phone: document.getElementById("regPhone").value,
+      country: document.getElementById("regCountry").value,
+      sponsor: document.getElementById("regSponsor").value,
+      balance: 0.10,
+      earned: 0.10,
+      day: 1,
+      lastClaim: "",
+      lastYt: "",
+      referrals: 0,
+      created: Date.now()
+    });
+  } catch (e) { alert(e.message); }
+}
+
+async function login() {
+  const email = document.getElementById("loginEmail").value.trim();
+  const pass = document.getElementById("loginPass").value;
+  try { await signInWithEmailAndPassword(auth, email, pass); }
+  catch (e) { alert(e.message); }
+}
+
+function logout() { signOut(auth); }
+
+function showAuth() {
+  document.getElementById("authPage").classList.remove("hidden");
+  document.getElementById("loginPage").classList.add("hidden");
+  hideAllPages();
+  document.getElementById("navBar").style.display = "none";
+}
+function showLogin() {
+  document.getElementById("authPage").classList.add("hidden");
+  document.getElementById("loginPage").classList.remove("hidden");
+  hideAllPages();
+  document.getElementById("navBar").style.display = "none";
+}
+
+function hideAllPages() {
+  ["homePage","earnPage","teamPage","walletPage","adminPage"].forEach(id => 
+    document.getElementById(id).classList.add("hidden")
+  );
+  document.querySelectorAll(".bottom div").forEach(d => d.classList.remove("active"));
+}
+
+function goHome() {
+  hideAllPages();
+  document.getElementById("homePage").classList.remove("hidden");
+  document.getElementById("navHome").classList.add("active");
+  document.getElementById("navBar").style.display = "flex";
+  refreshUI();
+}
+function goEarn() {
+  hideAllPages();
+  document.getElementById("earnPage").classList.remove("hidden");
+  document.getElementById("navEarn").classList.add("active");
+  refreshUI();
+}
+function goTeam() {
+  hideAllPages();
+  document.getElementById("teamPage").classList.remove("hidden");
+  document.getElementById("navTeam").classList.add("active");
+  const link = window.location.origin + window.location.pathname + "?ref=" + currentUser.uid.slice(0,8);
+  document.getElementById("refLink").textContent = link;
+  getDoc(doc(db, "users", currentUser.uid)).then(s => {
+    document.getElementById("refCount").textContent = s.data()?.referrals || 0;
+  });
+}
+function goWallet() {
+  hideAllPages();
+  document.getElementById("walletPage").classList.remove("hidden");
+  document.getElementById("navWallet").classList.add("active");
+  refreshUI();
+}
+function goAdmin() {
+  hideAllPages();
+  document.getElementById("adminPage").classList.remove("hidden");
+  document.getElementById("navMe").classList.add("active");
+  document.getElementById("adminContent").classList.add("hidden");
+  document.getElementById("adminCode").value = "";
+  document.getElementById("navBar").style.display = "flex";
+}
+
+function copyRef() {
+  navigator.clipboard.writeText(document.getElementById("refLink").textContent).then(() => alert("Referral link copied!"));
+}
+
+async function refreshUI() {
+  if (!currentUser) return;
+  const snap = await getDoc(doc(db, "users", currentUser.uid));
+  const u = snap.data();
+  const name = u.name || currentUser.email.split("@")[0];
+  document.getElementById("helloUser").textContent = name;
+  document.getElementById("userCode").textContent = name.toUpperCase();
+  document.getElementById("bal").textContent = u.balance.toFixed(2);
+  document.getElementById("walletBal").textContent = u.balance.toFixed(2);
+  document.getElementById("earnedToday").textContent = u.earned.toFixed(2);
+  document.getElementById("dayNum").textContent = u.day;
+  document.getElementById("dayNum2").textContent = u.day;
+  document.getElementById("nextBonus").textContent = settings.claim.toFixed(2);
+  document.getElementById("nextBonus2").textContent = settings.claim.toFixed(2);
+  document.getElementById("nextDay").textContent = (u.day || 1) + 1;
+  document.querySelectorAll(".rewardVal").forEach(el => el.textContent = settings.reward.toFixed(2));
+
+  const claimed = u.lastClaim === today();
+  const claimBtn = document.getElementById("claimBtn");
+  const claimBtn2 = document.getElementById("claimBtn2");
+  if (claimBtn) {
+    claimBtn.textContent = claimed ? "Claimed" : "Claim";
+    claimBtn.classList.toggle("done", claimed);
+  }
+  if (claimBtn2) {
+    claimBtn2.textContent = claimed ? "Claimed" : "Claim";
+    claimBtn2.classList.toggle("done", claimed);
+  }
+  const ytBtn = document.getElementById("ytBtn");
+  if (ytBtn) {
+    ytBtn.textContent = u.lastYt === today() ? "Done" : "Watch";
+    ytBtn.classList.toggle("done", u.lastYt === today());
+  }
+}
+
+async function claimDaily() {
+  const ref = doc(db, "users", currentUser.uid);
+  const snap = await getDoc(ref);
+  const u = snap.data();
+  if (u.lastClaim === today()) return alert("Already claimed today");
+  await updateDoc(ref, {
+    balance: u.balance + settings.claim,
+    earned: u.earned + settings.claim,
+    day: (u.day || 1) + 1,
+    lastClaim: today()
+  });
+  refreshUI();
+  alert(`+\[ {settings.claim.toFixed(2)} claimed`);
+}
+
+async function doYoutube() {
+  const ref = doc(db, "users", currentUser.uid);
+  const snap = await getDoc(ref);
+  const u = snap.data();
+  if (u.lastYt === today()) return alert("Already done today");
+  window.open("https://www.youtube.com", "_blank");
+  if (!confirm("Did you watch a video? Click OK to claim.")) return;
+  await updateDoc(ref, {
+    balance: u.balance + settings.reward,
+    earned: u.earned + settings.reward,
+    lastYt: today()
+  });
+  refreshUI();
+  alert(`You earned \]{settings.reward.toFixed(2)}`);
+}
+
+async function cashout() {
+  const ref = doc(db, "users", currentUser.uid);
+  const snap = await getDoc(ref);
+  const u = snap.data();
+  if (u.balance < 5) return alert("Minimum cashout is $5");
+  if (!confirm(`Request cashout of \[ {u.balance.toFixed(2)}?`)) return;
+  await addDoc(collection(db, "cashouts"), {
+    uid: currentUser.uid,
+    email: currentUser.email,
+    amount: u.balance,
+    status: "pending",
+    time: Date.now()
+  });
+  alert("Cashout request sent to admin.");
+}
+
+async function checkAdmin() {
+  if (document.getElementById("adminCode").value !== ADMIN_CODE) return alert("Wrong code");
+  document.getElementById("adminContent").classList.remove("hidden");
+  const usersSnap = await getDocs(collection(db, "users"));
+  document.getElementById("totalUsers").textContent = usersSnap.size;
+  let html = "";
+  usersSnap.forEach(d => {
+    const u = d.data();
+    html += `<div class="userRow">
+      <span>${u.email || d.id}</span>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <input class="editInput" type="number" step="0.01" id="bal_\( {d.id}" value=" \){u.balance.toFixed(2)}">
+        <button class="taskBtn" onclick="updateBalance('${d.id}')">Save</button>
+      </div>
+    </div>`;
+  });
+  document.getElementById("usersList").innerHTML = html || "<p>No users</p>";
+
+  document.getElementById("newClaim").value = settings.claim;
+  document.getElementById("newReward").value = settings.reward;
+
+  const cashSnap = await getDocs(query(collection(db, "cashouts"), where("status", "==", "pending")));
+  let cashHtml = "";
+  cashSnap.forEach(d => {
+    const c = d.data();
+    cashHtml += `<div class="userRow"><span>\( {c.email} · \]{c.amount.toFixed(2)}</span><button class="taskBtn" onclick="markPaid(' \){d.id}', \( {c.amount}, ' \){c.uid}')">Mark Paid</button></div>`;
+  });
+  document.getElementById("cashoutsList").innerHTML = cashHtml || "<p>No pending cashouts</p>";
+}
+
+window.updateBalance = async (uid) => {
+  const newBal = parseFloat(document.getElementById("bal_" + uid).value);
+  if (isNaN(newBal)) return alert("Invalid amount");
+  await updateDoc(doc(db, "users", uid), { balance: newBal });
+  alert("Balance updated");
+  if (currentUser && currentUser.uid === uid) refreshUI();
+};
+
+window.saveRewards = () => {
+  settings.claim = parseFloat(document.getElementById("newClaim").value) || 0.10;
+  settings.reward = parseFloat(document.getElementById("newReward").value) || 0.10;
+  alert("Rewards updated");
+  if (currentUser) refreshUI();
+};
+
+window.markPaid = async (cashId, amount, uid) => {
+  await updateDoc(doc(db, "cashouts", cashId), { status: "paid" });
+  const uref = doc(db, "users", uid);
+  const usnap = await getDoc(uref);
+  if (usnap.exists()) {
+    await updateDoc(uref, { balance: Math.max(0, usnap.data().balance - amount) });
+  }
+  alert("Marked as paid");
+  checkAdmin();
+};
+
+function backHome() { goHome(); }
+
+window.register = register;
+window.login = login;
+window.logout = logout;
+window.showLogin = showLogin;
+window.showAuth = showAuth;
+window.goHome = goHome;
+window.goEarn = goEarn;
+window.goTeam = goTeam;
+window.goWallet = goWallet;
+window.goAdmin = goAdmin;
+window.copyRef = copyRef;
+window.claimDaily = claimDaily;
+window.doYoutube = doYoutube;
+window.cashout = cashout;
+window.checkAdmin = checkAdmin;
+window.backHome = backHome;
+</script>
+</body>
+  </html>
